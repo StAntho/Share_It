@@ -26,3 +26,22 @@ A `AbstractController` class is present with methods for rendering **Twig** temp
 
 # Templating
 A `link()` function has been added to **Twig** to create links to routes in templates.
+
+
+
+# Projet
+Le site **Share It** doit permettre de partager des fichiers (clone de wetransfer)
+
+Sur la page accueil on doit avaoir un formulaire qui doit permettre d'envoyer un fichier
+Lorsque le formulaire est envoyé, on vérifie que le fichier ait été correctement chargé, puis on l'enregistre dans un dossier 'files' avec un nom unique 
+
+Aussi, enregistrer les informations du fichier en base de données:
+
+- 'id' la clé primaire
+- 'filename' nom unique du fichier sur le serveur
+- 'original-filename' nom original du fichier
+
+Sur une autre page, on doit pouvoir télécharger un fichier
+L'adresse pourrait être '/download/42' (où '42' est l'identifiant en base de données).
+
+Le lien de téléchargement doit apparaitre après avoir envoyé un fichier.
