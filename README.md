@@ -32,7 +32,7 @@ A `link()` function has been added to **Twig** to create links to routes in temp
 # Projet
 Le site **Share It** doit permettre de partager des fichiers (clone de wetransfer)
 
-Sur la page accueil on doit avaoir un formulaire qui doit permettre d'envoyer un fichier
+Sur la page accueil on doit avoir un formulaire qui doit permettre d'envoyer un fichier
 Lorsque le formulaire est envoyé, on vérifie que le fichier ait été correctement chargé, puis on l'enregistre dans un dossier 'files' avec un nom unique 
 
 Aussi, enregistrer les informations du fichier en base de données:

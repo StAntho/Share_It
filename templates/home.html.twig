@@ -8,4 +8,17 @@
 
 {% block body %}
     <h1>Share It!</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="email" placeholder="Email expediteur" name="expediteur"><br><br>
+        <input type="email" placeholder="Email destinataire" name="destinataire"><br><br>
+
+        <textarea name="desc" id="desc" cols="30" rows="10" placeholder="Description"></textarea><br><br>
+
+        <input type="file" name="file" value="New File"><br><br>
+
+        <input type="submit" name="valider" value="Envoyer">
+    </form>
 {% endblock %}
+
+
