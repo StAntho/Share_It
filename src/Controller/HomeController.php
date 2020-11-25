@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\File\UploadService;
 use Doctrine\DBAL\Connection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,8 +14,12 @@ use function DI\string;
 
 class HomeController extends AbstractController
 {
-    public function homepage(ResponseInterface $response, ServerRequestInterface $request)
-    {
+    public function homepage(
+        ResponseInterface $response,
+        ServerRequestInterface $request,
+        UploadService $uploadService,
+        Connection $connection
+    ) {
         // Récupérer les fichiers envoyés:
         $listeFichiers = $request->getUploadedFiles();
 
@@ -23,27 +28,17 @@ class HomeController extends AbstractController
             /** @var UploadedFileInterface $fichier */
             $file = $listeFichiers['file'];
 
-            /**
-             * Méthodes à utiliser de $fichier:
-             *      getClientFilename()     nom original du fichier
-             *      getError()              code d'erreur
-             *      moveTo()                déplacer le fichier
-             */
-            //$nouveau_nom = '...';
-            // $fichier->moveTo($nouveauNom);
+            //Récupérer le nouveau nom du fichier
+            $newname = $uploadService->saveFile($file);
 
-            //Générer un nom de fichier unique
-            //horodatage + chaine de caractères aléatoires + extension
-            $filename = date("YmdHis");
-            $filename .= bin2hex(random_bytes(8));
-            $filename .= '.' . pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+            //Enregistrer les infos du fichier en base de données
+            $connection->insert('file', [
+                'filename' => $newname,
+                'original_filename' => $file->getClientFilename(),
+            ]);
 
-            //Construire le chemain de destination du fichier
-            //Chemin vers le dossier /files/ + nouveau nom de fichier
-            $path = __DIR__ . '/../../files/' . $filename;
+            //Aficher un message à l'utilisateur
 
-            //Déplacer le fichier
-            $file->moveTo($path);
         }
         return $this->template($response, 'home.html.twig');
     }

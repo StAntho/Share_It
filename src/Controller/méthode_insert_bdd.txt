@@ -1,0 +1,30 @@
+<?php
+
+// méthode insert()
+$connection->insert('fichier', [
+    'nom' => $nouveauNom,
+    'nom_original' => $fichier->getClientFilename(),
+]);
+
+// méthode executeStatement()
+$connection->executeStatement('INSERT INTO fichier (nom, nom_original) VALUES (:nom, :nom_original)', [
+    'nom' => $nouveauNom,
+    'nom_original' => $fichier->getClientFilename(),
+]);
+
+// méthode prepare() (style PDO)
+$query = $connection->prepare('INSERT INTO fichier (nom, nom_original) VALUES (:nom, :nom_original)');
+$query->bindValue('nom', $nouveauNom);
+$query->bindValue('nom_original', $fichier->getClientFilename());
+$query->execute();
+
+// Query Builder
+$queryBuilder = $connection->createQueryBuilder();
+$queryBuilder
+    ->insert('fichier')
+    ->values([
+        'nom' => $nouveauNom,
+        'nom_original' => $fichier->getClientFilename(),
+    ])
+    ;
+$queryBuilder->execute();
