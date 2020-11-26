@@ -22,6 +22,10 @@ $app
     ->get('/success/{id:\d+}', [HomeController::class, 'success'])
     ->setName('success');
 
+$app
+    ->get('/file-error', [HomeController::class, 'fileError'])
+    ->setName('file-error');
+
 //On peut indiquer des paramètres dans les routes entre accolades: {param}
 //On peut indiquer leur format avec des regEx: \d+ (constitué d'un ou plusieurs chiffres)
 //Les paramètres seront envoyés en arguent de la méthode du cotrolleur
