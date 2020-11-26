@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Database\FileManager;
 use App\File\UploadService;
 use Doctrine\DBAL\Connection;
 use Psr\Http\Message\ResponseInterface;
@@ -18,7 +19,7 @@ class HomeController extends AbstractController
         ResponseInterface $response,
         ServerRequestInterface $request,
         UploadService $uploadService,
-        Connection $connection
+        FileManager $fileManager
     ) {
         // Récupérer les fichiers envoyés:
         $listeFichiers = $request->getUploadedFiles();
@@ -32,15 +33,22 @@ class HomeController extends AbstractController
             $newname = $uploadService->saveFile($file);
 
             //Enregistrer les infos du fichier en base de données
-            $connection->insert('file', [
-                'filename' => $newname,
-                'original_filename' => $file->getClientFilename(),
+            $file = $fileManager->createFile($newname, $file->getClientFilename());
+
+            //Redirection vers la page de succès
+            return $this->redirect('success', [
+                'id' => $file->getId()
             ]);
-
-            //Aficher un message à l'utilisateur
-
         }
         return $this->template($response, 'home.html.twig');
+    }
+
+    public function success(ResponseInterface $response, int $id, FileManager $filemanager)
+    {
+        $file = $filemanager->getById($id);
+        return $this->template($response, 'success.html.twig', [
+            'file' => $file
+        ]);
     }
 
     public function download(ResponseInterface $response, int $id)
