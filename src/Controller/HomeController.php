@@ -64,10 +64,35 @@ class HomeController extends AbstractController
         return $this->template($response, 'file_error.html.twig');
     }
 
-    public function download(ResponseInterface $response, int $id)
+    public function download(ResponseInterface $response, int $id, FileManager $filemanager)
     {
         //Affiche 'Identifiant: %d' sur la page download
-        $response->getBody()->write(sprintf('Identifiant: %d', $id));
+        //$response->getBody()->write(sprintf('Identifiant: %d', $id));
+        //return $response;
+
+        // Sur la route "download":
+        // Récupérer le fichier en base de données, s'il n'existe pas, rediriger vers la route "file-error".
+        $file = $filemanager->getById($id);
+        if ($file === null) {
+            return $this->redirect('file-error');
+        }
+
+        // Vérifier ensuite que le fichier existe bien dans le dossier "files", sinon rediriger vers la route "file-error".
+        // Sinon, faire télécharger le fichier par le navigateur, avec son nom original (utiliser l'objet $response).
+        $filename = $file->getFilename();
+        $folderfile = __DIR__ . "/../../files/" . $filename;
+        if (!file_exists($folderfile)) {
+            return $this->redirect('file-error');
+        }
+
+        $response = $response->withHeader('Content-Disposition: attachment', 'filename="' . basename($filename) . '"');
         return $response;
     }
+
+    //     Bonus: 
+    //  - enregistrer le Type MIME des fichiers en base de données pour l'indiquer lors du téléchargement
+    //  - implémenter un compteur de téléchargements.
 }
+
+
+//aymericmayeux@evogue.fr
